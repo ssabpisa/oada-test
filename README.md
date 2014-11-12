@@ -19,9 +19,7 @@ To start the API server:
 
 ### Option A
 
-You may perform the OADA compliance check via [this web client](http://oada-test.herokuapp.com/compliance) by simply give it your API endpoint. The automated tester will test your API with the latest OADA specifications and report on the results. Depending on the latency of your API, it may takes anywhere from 5 seconds to 5 minutes.
-
-You could also try Option B, if Option A takes too long.
+You may perform the OADA compliance check via [this web client](http://oada-test.herokuapp.com/compliance) by simply give it your API endpoint. The automated tester will test your API with the latest OADA specifications and report on the results. 
 
 ### Option B
 
@@ -40,7 +38,7 @@ If you wish to run the test against a different server, modify the server hostna
       bookmark: "bookmarks/machines/harvesters"
     }; 
 
-If you do not change this parameter, the test will try to run against the local test server (localhost:3000) which you can start with the instructions above (npm start).
+If you do not change this parameter, the test will try to run against the local test server (https://localhost:8443) which you can start with the instructions above (npm start).
 
 **Performing the tests**
 
@@ -48,6 +46,7 @@ If you do not change this parameter, the test will try to run against the local 
 
 This will generate a color coded cucumber report, and a summary of passed/failed cases.
 When you do this, it will perform all the tests located in `/cucumber/features` directory. Red for fail and green for pass.
+
 
 NOTE: if this fails with an error message about "superagent", try manually installing superagent with npm:
 
