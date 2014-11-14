@@ -23,6 +23,7 @@ var models = require('./known_words');
 var request = require('superagent');
 var utils = require('./utils');
 var jsonPath = require('JSONPath');
+var Sort = require("node-sort")
 
 var World = function World(callback) {
     this._lastResponse = null;
@@ -34,7 +35,7 @@ var World = function World(callback) {
     this.last_response  = null;
     this.utils = utils;
     this.walker = jsonPath;
-
+    this.sorter = new Sort();
     this.memory = null;
 
 

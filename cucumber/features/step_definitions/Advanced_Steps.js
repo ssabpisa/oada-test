@@ -68,21 +68,33 @@ module.exports = function () {
 	        return; 
 	      }
 	      var fieldnames = [];
-	      var assoc = {};
+	      var valid = {};
 	      var assoc_count = {};
 	      var walk = matches[0];
 
 	      var ENTER = "enter";
 	      var EXIT = "exit";
 
+	      var _cmp = function(a,b){
+			  if(a.t > b.t){
+			    return 1;
+			  }else if(a.t == a.b){
+			    return 0;
+			  }else if(a.t < b.t){
+			    return -1;
+			  }
+			  return false;
+		  }
+
 	      //sort the walk
-	      this.utils.quicksort(walk ,0, walk.length, 't');
+	      // this.utils.quicksort(walk ,0, walk.length, 't');
+	       walk = this.sorter.mergeSort(walk, _cmp);
 
 	      //obtain list of fieldnames
 	      fieldnames = this.walker.eval(walk, "$.*.field.name");
 	      for(var i in fieldnames){
-	        assoc[fieldnames[i]] = 0;
-	        assoc_count[fieldnames[i]] = 0;
+	        valid[fieldnames[i]] = 0;
+	        assoc_count[fieldnames[i]] = [];
 	      }
 
 
@@ -102,6 +114,7 @@ module.exports = function () {
 	      //   //can continue
 	      // }
 
+
 	      //check that every field has a matching pair in order (if any exit)
 	      for(var i in walk){
 	          var ev = walk[i];
@@ -110,18 +123,28 @@ module.exports = function () {
 
 	          if(ev["event"] == EXIT){
 	            xor_factor = 0;
+	            
 	          }else if(ev["event"] == ENTER){
 	            xor_factor = 1;
 	          }
 
-	          assoc[fn] = (assoc[fn] ^ xor_factor); 
-	          assoc_count[fn] = assoc_count[fn] + 1;
+	          
+
+	          if(assoc_count[fn].length > 0){
+	          	var previous = assoc_count[fn][assoc_count[fn].length - 1];
+	          	if(previous == ev["event"]){
+	          		valid[fn] = false;
+	          	}
+	          }
+
+	          assoc_count[fn].push(ev["event"])
+	          
 	      }
 
+
 	      //final check
-	      for(var key in assoc){
-	          var valid = assoc[key];
-	          if(!valid && (assoc_count[key] > 1)){
+	      for(var key in valid){	  
+	          if((valid[key] === false) && (assoc_count[key].length > 1)){
 	          	//its always valid if there is no pair
 	            callback.fail(new Error("Field `" + key + "` or its preceeding Field does not have valid ENTER-EXIT matching pair, " + 
 	            	"\nThere are " + assoc_count[key] + " events for this field."));

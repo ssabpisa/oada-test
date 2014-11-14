@@ -18,6 +18,7 @@
     "JSONPath": "~0.10.0",
     "socket.io": "*",
     "ejs": "~0.7.1",
-    "superagent": "~0.18.2"
+    "superagent": "~0.18.2",
+    "node-sort": "~0.2.0"
   }
 }
