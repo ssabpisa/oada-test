@@ -98,7 +98,6 @@ module.exports = function () {
 	      }
 
 
-
 	      //check that $.event first item is enter
 	      if(this.walker.eval(walk, "$.*.event").length == 0){
 	        callback.fail(new Error("Missing event attribute for each item in " + path_to_array));
@@ -131,8 +130,8 @@ module.exports = function () {
 	          
 
 	          if(assoc_count[fn].length > 0){
-	          	var previous = assoc_count[fn][assoc_count[fn].length - 1];
-	          	if(previous == ev["event"]){
+	          	var previous_event = assoc_count[fn][assoc_count[fn].length - 1];
+	          	if(previous_event == ev["event"]){
 	          		valid[fn] = false;
 	          	}
 	          }
