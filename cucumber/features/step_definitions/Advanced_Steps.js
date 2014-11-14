@@ -69,6 +69,7 @@ module.exports = function () {
 	      }
 	      var fieldnames = [];
 	      var assoc = {};
+	      var assoc_count = {};
 	      var walk = matches[0];
 
 	      var ENTER = "enter";
@@ -81,7 +82,10 @@ module.exports = function () {
 	      fieldnames = this.walker.eval(walk, "$.*.field.name");
 	      for(var i in fieldnames){
 	        assoc[fieldnames[i]] = 0;
+	        assoc_count[fieldnames[i]] = 0;
 	      }
+
+
 
 	      //check that $.event first item is enter
 	      if(this.walker.eval(walk, "$.*.event").length == 0){
@@ -91,12 +95,12 @@ module.exports = function () {
 	      }
 
 	      //check that first of any field is enter
-	      if(walk[0]["event"] != ENTER){
-	        console.log(walk["event"])
-	        return;
-	        callback.fail(new Error("$.event first item is NOT enter event"));
-	        //can continue
-	      }
+	      // if(walk[0]["event"] != ENTER){
+	      //   console.log(walk["event"])
+	      //   callback.fail(new Error("$.event first item is NOT enter event"));
+	      //   return;
+	      //   //can continue
+	      // }
 
 	      //check that every field has a matching pair in order (if any exit)
 	      for(var i in walk){
@@ -111,13 +115,16 @@ module.exports = function () {
 	          }
 
 	          assoc[fn] = (assoc[fn] ^ xor_factor); 
+	          assoc_count[fn] = assoc_count[fn] + 1;
 	      }
 
 	      //final check
 	      for(var key in assoc){
 	          var valid = assoc[key];
-	          if(!valid){
-	            callback.fail(new Error("Field `" + key + "` or its preceeding Field does not have valid ENTER-EXIT matching pair"));
+	          if(!valid && (assoc_count[key] > 1)){
+	          	//its always valid if there is no pair
+	            callback.fail(new Error("Field `" + key + "` or its preceeding Field does not have valid ENTER-EXIT matching pair, " + 
+	            	"\nThere are " + assoc_count[key] + " events for this field."));
 	            return;
 	          }
 	      }
